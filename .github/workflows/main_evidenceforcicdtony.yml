@@ -49,7 +49,7 @@ jobs:
           include-prerelease: true
 
       - name: Test with dotnet
-        run: dotnet test --configuration Release ./ProjectManager.Tests/ProjectManager.Tests.csproj
+        run: dotnet test --configuration Release --logger trx --results-directory ./TestResults ./ProjectManager.Tests/ProjectManager.Tests.csproj
         
   deploy:
     runs-on: windows-latest
