@@ -1,4 +1,4 @@
-name: Build, test, and deploy ASP.Net Core app to Azure Web App - EvidenceForCiCdTony
+name: EvidenceForCiCdTony
 
 on:
   push:
