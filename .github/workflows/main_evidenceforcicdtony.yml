@@ -41,9 +41,6 @@ jobs:
   test:
     runs-on: windows-latest
     needs: build
-    env:
-      BUILD_CONFIG: 'Release'
-      SOLUTION: 'ProjectManager.sln'
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
@@ -57,7 +54,7 @@ jobs:
           include-prerelease: true
 
       - name: Test with dotnet
-        run: dotnet test $SOLUTION -c Release
+        uses: RachelGanonNew/Run-All-.Net-Unit-Test@v1.2.1
 
   deploy:
     runs-on: windows-latest
