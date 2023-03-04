@@ -49,7 +49,7 @@ jobs:
           include-prerelease: true
 
       - name: Test with dotnet
-        run: dotnet test "C:\Users\runneradmin\AppData\Local\Microsoft\dotnet\myapp\ProjectManager.Tests.dll"
+        run: dotnet test " C:\Users\runneradmin\AppData\Local\Microsoft\dotnet\myapp\"
         
   deploy:
     runs-on: windows-latest
