@@ -54,7 +54,7 @@ jobs:
           include-prerelease: true
 
       - name: Test with dotnet
-        uses: RachelGanonNew/Run-All-.Net-Unit-Test@v1.2.1
+        uses: RachelGanonNew/Run-All-.Net-Unit-Test@bb6eb3c83b36c949e7598bdaff8198c037bd68c0
 
   deploy:
     runs-on: windows-latest
