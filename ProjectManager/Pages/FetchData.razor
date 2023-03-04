@@ -1,0 +1,19 @@
+﻿@page "/output"
+@using ProjectManager.Data
+@inject WeatherForecastService BackendService
+
+<h1>Backend Service Page</h1>
+
+<input type="text" @bind="InputText" />
+<button @onclick="GetOutput">Get Output</button>
+<div>@OutputText</div>
+
+@code {
+    private string InputText { get; set; }
+    private string OutputText { get; set; }
+
+    private async Task GetOutput()
+    {
+        OutputText = await BackendService.GetForecastAsync(InputText);
+    }
+}

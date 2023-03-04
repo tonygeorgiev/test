@@ -1,0 +1,17 @@
+﻿@page "/"
+@namespace ProjectManager.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_Layout";
+}
+
+<component type="typeof(App)" render-mode="ServerPrerendered" />
+<script>
+    function registerInputKeyUpEvent(dotNetObject) {
+        let inputElement = document.querySelector('input');
+        inputElement.addEventListener('keyup', function (event) {
+            dotNetObject.invokeMethodAsync('OnInputKeyUp');
+        });
+    }
+
+</script>
