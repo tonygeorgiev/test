@@ -50,7 +50,7 @@ jobs:
           include-prerelease: true
 
       - name: Test with dotnet
-        run: dotnet test ${{env.DOTNET_ROOT}}/myapp/ProjectManager.Tests/ProjectManager.Tests.csproj
+        run: dotnet test ${{env.DOTNET_ROOT}}\myapp\ProjectManager.Tests\ProjectManager.Tests.csproj
 
   deploy:
     runs-on: windows-latest
