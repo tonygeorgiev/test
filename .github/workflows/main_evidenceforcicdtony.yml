@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build, test, and deploy ASP.Net Core app to Azure Web App - EvidenceForCiCdTony
 
 on:
@@ -10,28 +7,79 @@ on:
   workflow_dispatch:
 
 jobs:
-   build_and_test:
-
+  
+  build:
+    runs-on: windows-latest
     env:
       BUILD_CONFIG: 'Release'
       SOLUTION: 'ProjectManager.sln'
+      
+    steps:
+      - uses: actions/checkout@v2
 
-    runs-on: ubuntu-latest
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+          include-prerelease: true
+          
+      - name: Restore dependencies
+        run: dotnet restore $SOLUTION
+        
+      - name: Build with dotnet
+        run: dotnet build $SOLUTION --configuration $BUILD_CONFIG
+
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
+
+  test:
+    runs-on: windows-latest
+    needs: build
+    env:
+      BUILD_CONFIG: 'Release'
+      SOLUTION: 'ProjectManager.sln'
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: .net-app
+
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+          include-prerelease: true
+
+      - name: Test with dotnet
+        run: dotnet test $SOLUTION --configuration $BUILD_CONFIG --logger "trx;LogFileName=test-results.trx" || true
+
+  deploy:
+    runs-on: windows-latest
+    needs:
+      - build
+      - test
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-    - uses: actions/checkout@v2
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: .net-app
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.x
-
-
-    - name: Restore dependencies
-      run: dotnet restore $SOLUTION
-
-    - name: Build
-      run: dotnet build $SOLUTION --configuration $BUILD_CONFIG
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'EvidenceForCiCdTony'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D6008767238840F0B3335854E098EA55 }}
+          package: .      
       
-    - name: Test
-      run: dotnet test $SOLUTION --configuration $BUILD_CONFIG --logger "trx;LogFileName=test-results.trx" || true
